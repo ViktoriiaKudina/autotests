@@ -16,4 +16,11 @@ public class MainClassTest {
     public void testGetClassNumber() {
         Assert.assertTrue("The number should be over 45",mainClass.getClassNumber() > 45);
     }
+
+    @Test
+    public void testGetClassString(){
+        Assert.assertTrue ("The class \"getClassString\" should have words \"hello\" or \"Hello\"",
+                mainClass.getClassString().contains("Hello") ||
+                mainClass.getClassString().contains("hello"));
+    }
 }
