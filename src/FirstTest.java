@@ -4,15 +4,14 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.internal.runners.statements.ExpectException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.URL;
+import java.util.List;
 
 public class FirstTest {
 
@@ -92,7 +91,7 @@ public class FirstTest {
     }
 
     @Test
-    public void testCompareArticleTitle(){
+    public void testCompareArticleTitle() {
         waitForElementAndClick(By.xpath("//*[contains(@text,'Search Wikipedia')]"),
                 "Can't find Search Wikipedia input",
                 5);
@@ -114,7 +113,39 @@ public class FirstTest {
                 15);
 
         String articleTitle = titleElement.getAttribute("text");
-        Assert.assertEquals("Unexpected title","Java (programming language)",articleTitle);
+        Assert.assertEquals("Unexpected title", "Java (programming language)", articleTitle);
+
+    }
+
+    @Test
+    public void testCancelingASearch() {
+        waitForElementAndClick(By.xpath("//*[contains(@text,'Search Wikipedia')]"),
+                "Can't find Search Wikipedia input",
+                5);
+
+        waitForElementAndSendKeys(
+                By.xpath("//*[contains(@text,'Search…')]"),
+                "Java",
+                "Can't find search input",
+                5);
+
+        WebElement listElement = waitForElementPresent(
+                By.id("org.wikipedia:id/search_results_list"),
+                "Can't find any text with 'Java'",
+                15);
+
+        List<WebElement> contentList = listElement.findElements(By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container']"));
+        Assert.assertTrue(contentList.size() > 1);
+
+        waitForElementAndClear(
+                By.id("org.wikipedia:id/search_src_text"),
+                "Can't find search field",
+                15);
+
+        waitForElementPresent(
+                By.id("org.wikipedia:id/view_list_card_list"),
+                "The list is not empty",
+                15);
 
     }
 
@@ -146,16 +177,16 @@ public class FirstTest {
         return wait.until(ExpectedConditions.invisibilityOfElementLocated(by));
     }
 
-    private WebElement waitForElementAndClear(By by, String errorMessage, long timeoutInSeconds){
-        WebElement element = waitForElementPresent(by,errorMessage,timeoutInSeconds);
+    private WebElement waitForElementAndClear(By by, String errorMessage, long timeoutInSeconds) {
+        WebElement element = waitForElementPresent(by, errorMessage, timeoutInSeconds);
         element.clear();
         return element;
     }
 
-    private boolean assertElementHasText(By by, String value, String errorMessage, long timeoutInSeconds){
+    private boolean assertElementHasText(By by, String value, String errorMessage, long timeoutInSeconds) {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
         wait.withMessage(errorMessage + "\n");
-        return wait.until(ExpectedConditions.textToBe(by,value));
+        return wait.until(ExpectedConditions.textToBe(by, value));
     }
 
 }
