@@ -149,6 +149,38 @@ public class FirstTest {
 
     }
 
+    @Test
+    public void testCheckValidSearch(){
+        waitForElementAndClick(By.xpath("//*[contains(@text,'Search Wikipedia')]"),
+                "Can't find Search Wikipedia input",
+                5);
+
+        waitForElementAndSendKeys(
+                By.xpath("//*[contains(@text,'Search…')]"),
+                "Java",
+                "Can't find search input",
+                5);
+
+        WebElement listElement = waitForElementPresent(
+                By.id("org.wikipedia:id/search_results_list"),
+                "Can't find any text with 'Java'",
+                15);
+
+        //List<WebElement> contentList = listElement.findElements(By.id("org.wikipedia:id/fragment_main_coordinator"));
+        List<WebElement> contentList = listElement.findElements(By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_title']"));
+
+        for (int i = 0; i < contentList.size(); i++) {
+            WebElement element = contentList.get(i);
+
+            Assert.assertTrue(assertElementContainsText(
+                    element,
+                    "Java" ,
+                    "Can't find searching text",
+                    15
+            ));
+        }
+    }
+
     private WebElement waitForElementPresent(By by, String errorMessage, long timeoutInSeconds) {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
         wait.withMessage(errorMessage + "\n");
@@ -187,6 +219,12 @@ public class FirstTest {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
         wait.withMessage(errorMessage + "\n");
         return wait.until(ExpectedConditions.textToBe(by, value));
+    }
+
+    private boolean assertElementContainsText(WebElement element, String text, String errorMessage, long timeoutInSeconds) {
+        WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
+        wait.withMessage(errorMessage + "\n");
+        return wait.until(ExpectedConditions.textToBePresentInElement(element, text));
     }
 
 }
