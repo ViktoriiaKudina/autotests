@@ -385,12 +385,45 @@ public class FirstTest {
                     15
             ));
         }
+
+    }
+
+    @Test
+    public void testElementTitlePresent(){
+
+        waitForElementAndClick(By.xpath("//*[contains(@text,'Search Wikipedia')]"),
+                "Can't find Search Wikipedia input",
+                5);
+
+        waitForElementAndSendKeys(
+                By.xpath("//*[contains(@text,'Search…')]"),
+                "Java",
+                "Can't find search input",
+                5);
+
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container']//*[@text='Object-oriented programming language']"),
+                "Can't find 'Object-oriented programming language' topic searching by 'Java'",
+                15);
+
+        WebElement listElement = waitForElementPresent(
+                By.id("org.wikipedia:id/page_contents_container"),
+                "Something goes wrong",
+                15);
+
+        WebElement titleElement = listElement.findElement(By.id("org.wikipedia:id/view_page_title_text"));
+
+        Assert.assertTrue("Can't find element 'title'", assertElementPresent(titleElement));
     }
 
     private WebElement waitForElementPresent(By by, String errorMessage, long timeoutInSeconds) {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
         wait.withMessage(errorMessage + "\n");
         return wait.until(ExpectedConditions.presenceOfElementLocated(by));
+    }
+
+    private boolean assertElementPresent(WebElement element){
+        return element != null;
     }
 
     private WebElement waitForElementPresent(By by, String errorMessage) {
