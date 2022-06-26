@@ -16,6 +16,7 @@ public class MyListsPageObject extends MainPageObject {
         return ARTICLE_BY_TITLE_TPL.replace("{TITLE}", article_title);
     }
 
+
     public MyListsPageObject(AppiumDriver driver) {
         super(driver);
     }

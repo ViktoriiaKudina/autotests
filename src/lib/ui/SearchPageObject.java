@@ -12,18 +12,35 @@ public class SearchPageObject extends MainPageObject {
             SEARCH_RESULT_BY_SUBSTRING_TPL = "//*[@resource-id='org.wikipedia:id/page_list_item_container']//*[@text='{SUBSTRING}']",
             SEARCH_RESULT_ELEMENT = "//*[@resource-id='org.wikipedia:id/search_results_list']/*[@resource-id='org.wikipedia:id/search_container']",
             SEARCH_RESULT_ELEMENT_BY_ID = "org.wikipedia:id/fragment_main_coordinator",
-            SEARCH_EMPTY_RESULT_ELEMENT = "//*[@text='No results found']";
+            SEARCH_EMPTY_RESULT_ELEMENT = "//*[@text='No results found']",
+            SEARCH_RESULT_BY_TITLE_SUBSTRING_TPL = "//*[@resource-id='org.wikipedia:id/view_page_title_text']/*[@text='{SEARCH_TITLE}']",
+            SEARCH_RESULT_BY_DESCRIPTION_SUBSTRING_TPL = "//*[@resource-id='org.wikipedia:id/view_page_subtitle_text']/*[@text='{SEARCH_DESCRIPTION}']";
 
 
     public SearchPageObject(AppiumDriver driver) {
         super(driver);
     }
 
-    /**
+     /**
      * TEMPLATES METHODS
      */
     private static String getResultSearchElement(String substring) {
         return SEARCH_RESULT_BY_SUBSTRING_TPL.replace("{SUBSTRING}", substring);
+    }
+
+    private static String getSearchResultByTitle(String title){
+        return SEARCH_RESULT_BY_TITLE_SUBSTRING_TPL.replace("{SEARCH_TITLE}", title);
+    }
+
+    private static String getSearchResultByDescription(String description){
+        return SEARCH_RESULT_BY_DESCRIPTION_SUBSTRING_TPL.replace("{SEARCH_DESCRIPTION}", description);
+    }
+
+    public void waitForElementByTitleAndDescription(String title, String description){
+        String searchResultTitleById = getSearchResultByTitle(title);
+        String searchResultDescriptionById = getSearchResultByDescription(description);
+        this.waitForElementPresent(By.id(searchResultTitleById),"Can't find article's title"+ " " + title,15);
+        this.waitForElementPresent(By.id(searchResultDescriptionById),"Can't find article's description"+ " " + description,15);
     }
 
     public void initSearchInput() {
